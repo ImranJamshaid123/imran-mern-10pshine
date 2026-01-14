@@ -2,9 +2,12 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import pinoHttp from 'pino-http';
-import { errorHandler } from './src/middleware/errorHandler.js';
 
 dotenv.config();
+
+import routes from './src/routes/index.js';
+import { errorHandler } from './src/middleware/errorHandler.js';
+import './src/config/database.js';
 
 const app = express();
 
@@ -29,6 +32,10 @@ app.use(
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK' });
 });
+
+
+// API routes
+app.use('/api', routes);
 
 app.use(errorHandler);
 

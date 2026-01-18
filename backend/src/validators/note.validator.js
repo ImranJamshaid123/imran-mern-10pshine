@@ -1,0 +1,24 @@
+import { body } from 'express-validator';
+
+export const createNoteValidator = [
+  body('title')
+    .notEmpty()
+    .withMessage('Title is required'),
+
+  body('content')
+    .optional()
+    .isString()
+    .withMessage('Content must be a string'),
+];
+
+export const updateNoteValidator = [
+  body('title')
+    .optional()
+    .notEmpty()
+    .withMessage('Title cannot be empty'),
+
+  body('content')
+    .optional()
+    .isString()
+    .withMessage('Content must be a string'),
+];

@@ -13,7 +13,7 @@ export const createNoteValidator = [
 
 export const updateNoteValidator = [
   body('title')
-    .optional()
+    .optional({ values: 'falsy' })
     .notEmpty()
     .withMessage('Title cannot be empty'),
 

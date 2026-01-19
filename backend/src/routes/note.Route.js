@@ -7,16 +7,21 @@ import {
   updateNote,
   deleteNote,
 } from '../controllers/note.controller.js';
+import {
+  createNoteValidator,
+  updateNoteValidator,
+} from '../validators/note.validator.js';
+import { validate } from '../middleware/validate.middleware.js';
 
 const router = express.Router();
 
 // All note routes are protected
 router.use(authenticate);
 
-router.post('/', createNote);
+router.post('/', createNoteValidator, validate, createNote);
 router.get('/', getNotes);
 router.get('/:id', getNoteById);
-router.put('/:id', updateNote);
+router.put('/:id', updateNoteValidator, validate, updateNote);
 router.delete('/:id', deleteNote);
 
 export default router;

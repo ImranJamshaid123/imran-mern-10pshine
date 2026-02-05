@@ -2,12 +2,22 @@ export const saveToken = (token) => {
   localStorage.setItem('token', token);
 };
 
+export const saveUser = (user) => {
+  localStorage.setItem('user', JSON.stringify(user));
+};
+
+export const getUser = () => {
+  const user = localStorage.getItem('user');
+  return user ? JSON.parse(user) : null;
+};
+
 export const getToken = () => {
   return localStorage.getItem('token');
 };
 
 export const logout = () => {
   localStorage.removeItem('token');
+  localStorage.removeItem('user');
 };
 
 const isJwt = (token) => {
@@ -42,4 +52,22 @@ export const isAuthenticated = () => {
     return false;
   }
   return true;
+};
+
+export const getUserFromToken = (token) => {
+  if (!isJwt(token)) return null;
+  try {
+    const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map(function (c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    return null;
+  }
 };

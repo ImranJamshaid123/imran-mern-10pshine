@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
-import { saveToken } from '../utils/auth';
+import { saveToken, saveUser, getUserFromToken } from '../utils/auth';
 import '../styles/Login.css';
 
 export default function Login() {
@@ -17,7 +17,26 @@ export default function Login() {
     setError('');
     try {
       const res = await api.post('/auth/login', { email, password });
+      console.log('Full login response:', res.data);
       saveToken(res.data.token);
+      
+      // First check if user data is directly in response
+      let userName = res.data.name || res.data.user?.name;
+      let userEmail = res.data.email || res.data.user?.email || email;
+      
+      // If not in response, try to decode from token
+      if (!userName) {
+        const tokenData = getUserFromToken(res.data.token);
+        console.log('Decoded token data:', tokenData);
+        userName = tokenData?.name || tokenData?.username || tokenData?.user?.name;
+        userEmail = tokenData?.email || tokenData?.user?.email || email;
+      }
+      
+      saveUser({ 
+        name: userName || userEmail?.split('@')[0] || 'User',
+        email: userEmail 
+      });
+      
       navigate('/notes', { replace: true });
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');

@@ -30,7 +30,10 @@ export default function ResetPassword() {
     setLoading(true);
 
     try {
-      await api.post(`/auth/reset-password/${token}`, { password });
+      await api.post(`/auth/reset-password/${token}`, {
+        newPassword: password,
+      });
+
       setMessage('Password reset successful! Redirecting to login...');
       setTimeout(() => {
         navigate('/login');

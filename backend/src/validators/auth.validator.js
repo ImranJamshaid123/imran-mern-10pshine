@@ -27,7 +27,7 @@ export const forgotPasswordValidator = [
 ];
 
 export const resetPasswordValidator = [
-  body('password')
+  body('newPassword')
     .isLength({ min: 6 })
     .withMessage('Password must be at least 6 characters long'),
 ];

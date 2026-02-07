@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import pool from '../config/database.js';
+import { sendEmail } from '../utils/sendEmail.js';
 
 // User Registration
 
@@ -76,24 +77,23 @@ export const login = async (req, res, next) => {
 // Forgot Password
 
 export const forgotPassword = async (req, res, next) => {
-    
   try {
-
-    if (!req.body || !req.body.email) {
-      return res.status(400).json({
-        message: 'Email is required',
-      });
-    }
-    
     const { email } = req.body;
 
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+
     const [users] = await pool.query(
-      'SELECT * FROM users WHERE email = ?',
+      'SELECT id, email FROM users WHERE email = ?',
       [email]
     );
 
+    
     if (!users.length) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.json({
+        message: 'If the email exists, a reset link has been sent',
+      });
     }
 
     const resetToken = crypto.randomBytes(32).toString('hex');
@@ -104,9 +104,23 @@ export const forgotPassword = async (req, res, next) => {
       [resetToken, expiry, email]
     );
 
-    res.json({
-      message: 'Password reset token generated',
-      resetToken, // (In real apps, send via email)
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+
+    await sendEmail({
+      to: email,
+      subject: 'Reset your password',
+      html: `
+        <h2>Password Reset Request</h2>
+        <p>You requested a password reset.</p>
+        <p>Click the link below to reset your password:</p>
+        <a href="${resetLink}" target="_blank">${resetLink}</a>
+        <p>This link will expire in 15 minutes.</p>
+        <p>If you did not request this, please ignore this email.</p>
+      `,
+    });
+
+    return res.json({
+      message: 'Password reset link has been sent to your email',
     });
   } catch (err) {
     next(err);

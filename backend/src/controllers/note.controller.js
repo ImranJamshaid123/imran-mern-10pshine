@@ -25,10 +25,36 @@ export const createNote = async (req, res, next) => {
 export const getNotes = async (req, res, next) => {
   try {
     const userId = req.user.id;
+    const { pinned, archived, favorite } = req.query;
+
+    let conditions = ['user_id = ?'];
+    let values = [userId];
+
+    if (pinned !== undefined) {
+      conditions.push('is_pinned = ?');
+      values.push(pinned === 'true' ? 1 : 0);
+    }
+
+    if (archived !== undefined) {
+      conditions.push('is_archived = ?');
+      values.push(archived === 'true' ? 1 : 0);
+    }
+
+    if (favorite !== undefined) {
+      conditions.push('is_favorite = ?');
+      values.push(favorite === 'true' ? 1 : 0);
+    }
+
+    const whereClause = `WHERE ${conditions.join(' AND ')}`;
 
     const [notes] = await pool.query(
-      'SELECT * FROM notes WHERE user_id = ? ORDER BY created_at DESC',
-      [userId]
+      `
+      SELECT *
+      FROM notes
+      ${whereClause}
+      ORDER BY is_pinned DESC, updated_at DESC
+      `,
+      values
     );
 
     res.json({
@@ -39,6 +65,69 @@ export const getNotes = async (req, res, next) => {
     next(error);
   }
 };
+
+export const updateNoteFlags = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+    const { is_pinned, is_archived, is_favorite } = req.body;
+
+    const [notes] = await pool.query(
+      'SELECT id FROM notes WHERE id = ? AND user_id = ?',
+      [id, userId]
+    );
+
+    if (!notes.length) {
+      return res.status(404).json({
+        success: false,
+        message: 'Note not found',
+      });
+    }
+
+    let updates = [];
+    let values = [];
+
+    if (is_archived !== undefined) {
+      updates.push('is_archived = ?');
+      values.push(is_archived ? 1 : 0);
+
+      // Auto-rules
+      if (is_archived) {
+        updates.push('is_pinned = 0');
+        updates.push('is_favorite = 0');
+      }
+    }
+
+    if (is_pinned !== undefined) {
+      updates.push('is_pinned = ?');
+      values.push(is_pinned ? 1 : 0);
+    }
+
+    if (is_favorite !== undefined) {
+      updates.push('is_favorite = ?');
+      values.push(is_favorite ? 1 : 0);
+    }
+
+    values.push(id);
+
+    await pool.query(
+      `
+      UPDATE notes
+      SET ${updates.join(', ')}, updated_at = NOW()
+      WHERE id = ?
+      `,
+      values
+    );
+
+    res.json({
+      success: true,
+      message: 'Note updated successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 
 // Get Single Note
 export const getNoteById = async (req, res, next) => {

@@ -1,6 +1,6 @@
 import NoteItem from './NoteItem';
 
-export default function NoteList({ notes, onDelete, onEdit }) {
+export default function NoteList({ notes, onDelete, onEdit, onToggle }) {
   if (!notes.length) {
     return (
       <div className="notes-empty">
@@ -13,7 +13,7 @@ export default function NoteList({ notes, onDelete, onEdit }) {
   return (
     <div className="notes-grid">
       {notes.map(note => (
-        <NoteItem key={note.id} note={note} onDelete={onDelete} onEdit={onEdit} />
+        <NoteItem key={note.id} note={note} onDelete={onDelete} onEdit={onEdit} onToggle={onToggle} />
       ))}
     </div>
   );

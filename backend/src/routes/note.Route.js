@@ -6,6 +6,7 @@ import {
   getNoteById,
   updateNote,
   deleteNote,
+  updateNoteFlags,
 } from '../controllers/note.controller.js';
 import {
   createNoteValidator,
@@ -22,6 +23,7 @@ router.post('/', createNoteValidator, validate, createNote);
 router.get('/', getNotes);
 router.get('/:id', getNoteById);
 router.put('/:id', updateNoteValidator, validate, updateNote);
+router.put('/:id/flags', updateNoteFlags);
 router.delete('/:id', deleteNote);
 
 export default router;

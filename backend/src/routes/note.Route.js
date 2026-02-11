@@ -25,5 +25,5 @@ router.get('/:id', getNoteById);
 router.put('/:id', updateNoteValidator, validate, updateNote);
 router.put('/:id/flags', updateNoteFlags);
 router.delete('/:id', deleteNote);
-
+router.patch('/:id/state', updateNoteFlags);
 export default router;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getNotes, createNote, updateNote, deleteNote } from '../api/notes';
+import { getNotes, createNote, updateNote, deleteNote,togglePin,  toggleFavorite, toggleArchive } from '../api/notes';
 import NoteForm from './NoteForm';
 import NoteList from './NoteList';
 import { logout, getUser } from '../utils/auth';
@@ -12,6 +12,19 @@ export default function Notes() {
   const [user, setUser] = useState(null);
   const [editingNote, setEditingNote] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [filter, setFilter] = useState('all');
+
+  const handleToggle = async (id, field, value) => {
+  if (field === 'is_pinned') await togglePin(id, value);
+  if (field === 'is_favorite') await toggleFavorite(id, value);
+  if (field === 'is_archived') await toggleArchive(id, value);
+
+  setNotes(prev =>
+    prev.map(n => (n.id === id ? { ...n, [field]: value } : n))
+  );
+};
+
+
   const navigate = useNavigate();
 
   const fetchNotes = async () => {
@@ -61,11 +74,23 @@ export default function Notes() {
     navigate('/login');
   };
 
-  const filteredNotes = notes.filter(note => {
-    const query = searchQuery.toLowerCase();
-    return note.title.toLowerCase().includes(query) || 
-           note.content.toLowerCase().includes(query);
-  });
+  const filteredNotes = notes
+  .filter(note => {
+    if (filter === 'pinned') return note.is_pinned && !note.is_archived;
+    if (filter === 'favorites') return note.is_favorite && !note.is_archived;
+    if (filter === 'archived') return note.is_archived;
+
+    return !note.is_archived;
+  })
+  .filter(note => {
+    const q = searchQuery.toLowerCase();
+    return (
+      note.title.toLowerCase().includes(q) ||
+      note.content.toLowerCase().includes(q)
+    );
+  })
+  .sort((a, b) => b.is_pinned - a.is_pinned);
+
 
   return (
     <div className="notes-page">
@@ -116,11 +141,27 @@ export default function Notes() {
           )}
         </section>
 
+        <section className="notes-filters">
+          {['all', 'pinned', 'favorites', 'archived'].map(f => (
+            <button
+              key={f}
+              className={`filter-btn ${filter === f ? 'active' : ''}`}
+              onClick={() => setFilter(f)}
+            >
+              {f === 'all' && '📋'}
+              {f === 'pinned' && '📌'}
+              {f === 'favorites' && '⭐'}
+              {f === 'archived' && '📦'}
+              <span>{f.charAt(0).toUpperCase() + f.slice(1)}</span>
+            </button>
+          ))}
+        </section>
+
         <section className="notes-content">
           {loading ? (
             <div className="notes-loading">Loading notes...</div>
           ) : (
-            <NoteList notes={filteredNotes} onDelete={handleDelete} onEdit={handleEdit} />
+            <NoteList notes={filteredNotes} onDelete={handleDelete} onEdit={handleEdit} onToggle={handleToggle} />
           )}
         </section>
       </div>

@@ -23,7 +23,8 @@ function App() {
               <Notes />
             </ProtectedRoute>
           }
-        />      
+        />   
+          
       </Routes>
     </BrowserRouter>
   );

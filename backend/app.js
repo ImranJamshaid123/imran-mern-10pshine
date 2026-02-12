@@ -20,11 +20,13 @@ app.use(express.json());
 // Logger middleware
 // Logs every incoming request and response
 
-app.use(
-  pinoHttp({
-    level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
-  })
-);
+if (process.env.NODE_ENV !== 'test') {
+  app.use(
+    pinoHttp({
+      level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+    })
+  );
+}
 
 // Health check route
 // Used to verify server status

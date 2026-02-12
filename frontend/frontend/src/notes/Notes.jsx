@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { getNotes, createNote, updateNote, deleteNote,togglePin,  toggleFavorite, toggleArchive } from '../api/notes';
 import NoteForm from './NoteForm';
 import NoteList from './NoteList';
+import ProfileModal from '../profile/ProfileModal';
 import { logout, getUser } from '../utils/auth';
 import { useNavigate } from 'react-router-dom';
 import './Notes.css';
@@ -13,6 +14,7 @@ export default function Notes() {
   const [editingNote, setEditingNote] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState('all');
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const handleToggle = async (id, field, value) => {
   if (field === 'is_pinned') await togglePin(id, value);
@@ -101,6 +103,9 @@ export default function Notes() {
             <p>Welcome back, <strong>{user?.name || 'User'}</strong>! Capture, organize, and revisit your thoughts.</p>
           </div>
           <div className="notes-actions">
+            <button className="btn btn-profile" onClick={() => setIsProfileModalOpen(true)} title="View Profile">
+              👤
+            </button>
             <button className="btn btn-logout" onClick={handleLogout}>Logout</button>
           </div>
         </header>
@@ -165,6 +170,8 @@ export default function Notes() {
           )}
         </section>
       </div>
+
+      <ProfileModal isOpen={isProfileModalOpen} onClose={() => setIsProfileModalOpen(false)} />
     </div>
   );
 }

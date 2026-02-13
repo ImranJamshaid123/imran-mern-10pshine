@@ -1,70 +1,91 @@
-# Getting Started with Create React App
+# Notes App (React)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A production-ready Notes application built with React. It provides authentication, protected routes, and full note CRUD workflows with a clean and maintainable structure.
+
+## Table of Contents
+
+- Overview
+- Features
+- Tech Stack
+- Requirements
+- Installation
+- Configuration
+- Available Scripts
+- Testing
+- Project Structure
+- Operational Notes
+
+## Overview
+
+This frontend consumes a REST API and manages authentication via JWT. It is designed to be easy to run locally and straightforward to deploy.
+
+## Features
+
+- User authentication (register, login, password reset)
+- Protected routes for authenticated views
+- Create, view, edit, and delete notes
+- JWT auto-attachment for API requests
+- Responsive UI with Bootstrap
+- Unit and component tests with React Testing Library
+
+## Tech Stack
+
+- React 19
+- React Router 7
+- Axios
+- Bootstrap 5
+- React Testing Library + Jest
+
+## Requirements
+
+- Node.js 18+ (recommended)
+- Backend API running locally or remotely
+
+## Installation
+
+```bash
+npm install
+```
+
+## Configuration
+
+The API base URL is defined in `src/api/axios.js`.
+
+```js
+const api = axios.create({
+  baseURL: 'http://localhost:5000/api',
+});
+```
+
+Update the value to point to the correct backend environment before running the app.
 
 ## Available Scripts
 
-In the project directory, you can run:
+- `npm start` - Start the development server
+- `npm test` - Run the test suite
+- `npm run build` - Build for production
+- `npm run eject` - Eject Create React App configuration (one-way)
 
-### `npm start`
+## Testing
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```bash
+npm test
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Project Structure
 
-### `npm test`
+```
+src/
+  api/            # Axios instance and API modules
+  auth/           # Auth pages (login/register/reset)
+  notes/          # Notes pages and components
+  profile/        # Profile modal
+  routes/         # Protected routes
+  styles/         # Page-level styles
+  utils/          # Auth utilities
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Operational Notes
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- JWT tokens are stored in `localStorage` and attached via Axios interceptors.
+- Ensure the backend API enables CORS for the frontend origin.

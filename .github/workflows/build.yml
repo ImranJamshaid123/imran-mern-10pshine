@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - develop
       - feature/frontend-unit-tests
   pull_request:
     types: [opened, synchronize, reopened]

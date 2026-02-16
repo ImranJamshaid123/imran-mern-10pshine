@@ -1,6 +1,7 @@
 MERN Notes Management Platform
 
 A Production-ready, full-stack Notes Management Platform built using React, Node.js, Express, and MySQL. The system enables secure user authentication, profile management, and end-to-end notes lifecycle operations, with robust unit testing and automated code quality analysis.
+
 The application follows modular architecture principles, secure API design, and modern CI/CD practices to ensure maintainability, scalability, and code reliability.
 
 🚀 Tech Stack

@@ -1,7 +1,7 @@
-# imran-mern-10pshine
+MERN Notes Management Platform
 
-MERN Notes Application - 10Pearls Shine Internship
-A full-stack Notes Management System built using React (CRA), Node.js, Express, and MySQL, featuring secure authentication, user profile management, notes CRUD functionality, and comprehensive unit testing for both frontend and backend.
+A Production-ready, full-stack Notes Management Platform built using React, Node.js, Express, and MySQL. The system enables secure user authentication, profile management, and end-to-end notes lifecycle operations, with robust unit testing and automated code quality analysis.
+The application follows modular architecture principles, secure API design, and modern CI/CD practices to ensure maintainability, scalability, and code reliability.
 
 🚀 Tech Stack
 
